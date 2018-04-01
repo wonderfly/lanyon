@@ -26,7 +26,7 @@ Shortcut:
 
 ## Pronouns with **con**
 
-Certain pronouns changes their form when following the preposition **con**
+Certain pronouns change their form when following the preposition **con**
 ("with"):
 
 | Person    | Singular  | Plural            |
@@ -54,7 +54,7 @@ There are _six_ exceptional prepositions that when preceding a pronoun, the
 subject form of the pronoun should be used. These are:
 
 ```
-entre (betwee)      menos (except)
+entre (between)     menos (except)
 exceptp (except)    salvo (except)
 incluso (including) según (according to)
 ```
