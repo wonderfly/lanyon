@@ -1,8 +1,9 @@
 # Permalinks
 #
-# Use of `relative_permalinks` ensures post links from the index work properly.
 permalink:           pretty
-relative_permalinks: true
+# Use of `relative_permalinks` is deprecated:
+# https://help.github.com/articles/page-build-failed-relative-permalinks-configured/
+# relative_permalinks: true
 
 # Setup
 title:               Lanyon
@@ -11,12 +12,6 @@ description:         'A reserved <a href="http://jekyllrb.com" target="_blank">J
 url:                 http://lanyon.getpoole.com
 baseurl:             ''
 paginate:            5
-
-# About/contact
-author:
-  name:              Mark Otto
-  url:               https://twitter.com/mdo
-  email:             markdotto@gmail.com
 
 # Custom vars
 version:             1.0.0
