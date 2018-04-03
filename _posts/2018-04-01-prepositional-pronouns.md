@@ -55,7 +55,7 @@ subject form of the pronoun should be used. These are:
 
 ```
 entre (between)     menos (except)
-exceptp (except)    salvo (except)
+excepto (except)    salvo (except)
 incluso (including) según (according to)
 ```
 
