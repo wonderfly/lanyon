@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Interrogative Pronouns
+category: [ spanish ]
 ---
 
 ## Definition

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Subject Pronouns
+category: [ spanish ]
 ---
 
 ## Definition

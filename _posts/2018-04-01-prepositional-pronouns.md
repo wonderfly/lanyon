@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Prepositional Pronouns
+category: [ spanish ]
 ---
 
 ## Definition
