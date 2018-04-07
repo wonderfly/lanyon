@@ -43,3 +43,6 @@ bower_components
 
 # Gems cached locally for local preview
 vendor/
+
+# Scripts can't be open sourced yet
+scripts/
