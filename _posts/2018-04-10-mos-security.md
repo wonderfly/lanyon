@@ -7,8 +7,8 @@ title: MOS - Security
 
 ## 9.3.4 Trusted Systems
 
-"Is it to build a secure operating system?" "Theoretically yes, but there are
-reasons why modern OSes are secure":
+"Is it possible to build a secure operating system?" "Theoretically yes, but
+there are reasons why modern OSes aren't secure":
 
   - Users are unwilling to throw away current unsecure systems. For example,
     there is actually a "secure OS" from Microsoft, but they never adversite it
