@@ -10,7 +10,7 @@ title: MOS - Security
 "Is it possible to build a secure operating system?" "Theoretically yes, but
 there are reasons why modern OSes aren't secure":
 
-  - Users are unwilling to throw away current unsecure systems. For example,
+  - Users are unwilling to throw away current insecure systems. For example,
     there is actually a "secure OS" from Microsoft, but they never adversite it
 and people won't be happy if told that their Windows systems will be replaced.
   - Features are the enemy of security, yet system designers keep adding
@@ -18,10 +18,10 @@ and people won't be happy if told that their Windows systems will be replaced.
 to be ASCII texts which in no way poses a security threat, and one day email
 developers added rich contents like Word documents that can have viruses written
 in macro. Another example is web pages, which used to be static HTML files that
-were secure, until the appearance of dynamic widgets like applet and Javascript.
+were secure, until the appearance of dynamic widgets like applet and JavaScript.
 Since then security problems pop one after another.
 
-### 9.3.5 Trused Computing Base
+### 9.3.5 Trusted Computing Base
 
 At the heart of a "trusted system" is a minimal **Trusted Computing Base
 (TCB)**. If the TCB is working to specification, it is believed that the system
@@ -53,7 +53,7 @@ MAC is common in the military, organizations, and hospitals.
 
 ### Multilevel
 
-The concept "multilevel" refers to the design that there are mutliple _security
+The concept "multilevel" refers to the design that there are multiple _security
 levels_ on a system, and users/processes at each level has restricted access to
 resource on the system. Two notable models of multilevel security are the
 Bella-La Padula model and the Biba model.
@@ -61,13 +61,13 @@ Bella-La Padula model and the Biba model.
 The Bella-La Padula model was designed for military use, where the core of
 security is information security, i.e., a general can have access to most
 information including everything a lieutenant knows, but he cannot tell
-everything he knows to the lieuteannt. When applied to an operating system, this
+everything he knows to the lieutenant. When applied to an operating system, this
 means a process can read files with an equal or lower level, but can write to
 files with an equal or higher level. This is why the model is often remembered
 as "read down and write up".
 
 The Bella-La Padula model makes sure information never flows from a higher level
-to lower, which is great for the military, but when applied to a corpration, it
+to lower, which is great for the military, but when applied to a corporation, it
 may break _data integrity_. For example, it would entitle an engineer to write
-to the CEO's company OKRs or the CFO's finacial reports. For corparations, an
+to the CEO's company OKRs or the CFO's financial reports. For corporations, an
 exact opposite model exists, and that is the Biba model.

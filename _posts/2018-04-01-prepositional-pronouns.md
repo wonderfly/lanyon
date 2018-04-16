@@ -6,7 +6,7 @@ category: [ spanish ]
 
 ## Definition
 
-A prepositinoal pronoun is to replace a noun that names a person or thing
+A prepositional pronoun is to replace a noun that names a person or thing
 following a preposition, serving as the object of that preposition.
 
 ## Standard prepositional pronouns
@@ -14,7 +14,7 @@ following a preposition, serving as the object of that preposition.
 In the simplest case, prepositional pronouns are nearly identical to the subject
 pronouns, except in the first- and second-person singular form, `mí` replaces
 `yo` and `ti` replaces `tú`, respectively. Note that `mí` takes an accent to
-distinguish it from `mi`, the posessive adjective, which means `my`. Another
+distinguish it from `mi`, the possessive adjective, which means `my`. Another
 exception is for the third-person singular, there is a pronoun for neuter:
 `ello`, meaning "it".
 
@@ -37,7 +37,7 @@ Certain pronouns change their form when following the preposition **con**
 | 3rd       | consigo   | consigo           |
 
 Complication:
-  - In the third-person forms, singlur or plural, `consigo` is used when the
+  - In the third-person forms, singular or plural, `consigo` is used when the
     subject of the sentence is the same as the object
   - Otherwise, the full form, `con él`, `con ella`, `con usted`, `con ello`,
     `con ellos`, `con ellas`, `con ustedes` should be used.
@@ -70,7 +70,7 @@ Todos bailan excepto él.
 ## Reflexive pronouns following a preposition
 
 Reflexive pronouns are similar to the English counterparts "myself", "yourself",
-"himself". When following a prepostion (e.g., `a`), they come in the following
+"himself". When following a preposition (e.g., `a`), they come in the following
 forms:
 
 | Person  | Singular      | Plural                    |
