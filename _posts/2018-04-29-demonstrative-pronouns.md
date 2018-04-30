@@ -5,7 +5,7 @@ category: [ spanish ]
 ---
 
 ## Definition
-This, that, these, those. For examples, "I like **this**", "I want **that**".
+This, that, these, those. For example, "I like **this**", "I want **that**".
 
 In Spanish, demonstrative pronouns look identical to demonstrative _adjectives_,
 except that the pronouns all carry an accent mark. For example, "This car" is
