@@ -14,11 +14,16 @@
     <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="/about/">About</a>
 
     {% comment %}
-      List only Spanish posts for now because that's what we have so far.
+      List only Spanish and UTLK posts for now because that's what we have so far.
     {% endcomment %}
 
     {% assign spanish_posts = site.categories.spanish | sort:"url" %}
     {% for post in spanish_posts %}
+      <a class="sidebar-nav-item{% if post.url == page.url %} active{% endif %}" href="{{ post.url }}" >{{ post.title }}</a>
+    {% endfor %}
+
+    {% assign utlk_posts = site.categories.utlk | sort:"url" %}
+    {% for post in utlk_posts %}
       <a class="sidebar-nav-item{% if post.url == page.url %} active{% endif %}" href="{{ post.url }}" >{{ post.title }}</a>
     {% endfor %}
 
