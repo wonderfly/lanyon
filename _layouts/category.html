@@ -9,7 +9,7 @@ layout: page
 {% assign posts = site.categories[page.category] | sort:"url" %}
 {% for post in posts %}
   <li>
-    <a href="{{ post.url | absolute_url }}">
+    <a href="{{site.baseurl}} {{ post.url }}">
       {{ post.title }}
     </a>
   </li>
