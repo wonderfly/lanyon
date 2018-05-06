@@ -2,8 +2,15 @@
 layout: page
 ---
 
-{% for post in site.categories[page.category] %}
-  <a href="{{ post.url | absolute_url }}">
-    {{ post.title }}
-  </a>
+<div>
+  {{ content }}
+</div>
+
+{% assign posts = site.categories[page.category] | sort:"url" %}
+{% for post in posts %}
+  <li>
+    <a href="{{ post.url | absolute_url }}">
+      {{ post.title }}
+    </a>
+  </li>
 {% endfor %}
