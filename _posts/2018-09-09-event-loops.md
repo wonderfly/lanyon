@@ -117,6 +117,9 @@ array of all listening sockets, and registers a read event for each of them.
 
 ## Systemd
 
+While Nginx supports many notification mechanisms, `sd-event` supports many more
+_event types_: I/O, timers, signals, child process stage changes, and `inotify`.
+
 ## Others
 
 ## Summary
