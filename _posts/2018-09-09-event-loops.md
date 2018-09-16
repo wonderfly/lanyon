@@ -10,16 +10,14 @@ toc: true
 
 **Work in progress...**
 
-# Event Loops
-
 Event loops has been something I've always wanted to take a deeper look into as
 it has appeared in so many places, ranging from networking servers to system
 daemons. In this blog I will take a case study on some of the popular event
 loop implementations, and summarize common patterns.
 
-## NGINX
+# NGINX
 
-### Design
+## Design
 
 Nginx achieves its high performance and scalability by multiplexing a single
 process for hundreds of thousands of connections, as opposed to using one
@@ -53,9 +51,9 @@ will be a matter of copying them from one buffer to another.
 
 [thread-pools]: https://www.nginx.com/blog/thread-pools-boost-performance-9x/
 
-### Implementation
+## Implementation
 
-#### The main loop
+### The main loop
 
 Nginx supports a wide variety of operating systems, but in this blog we will
 only look at Linux. The Linux version of the main loop is implemented by the
@@ -98,7 +96,7 @@ for those operations and that is hidden behind the _handler_ of each event.
 [ngx_epoll_module]: https://github.com/nginx/nginx/blob/release-1.15.3/src/event/modules/ngx_epoll_module.c
 [epoll_wait]: http://man7.org/linux/man-pages/man7/epoll.7.html
 
-#### Events
+### Events
 
 The main event interfaces are declared in [`src/event/ngx_event.h`][ngx_event.h]
 and implemented in [`src/event/ngx_event.c`][ngx_event.c] Two most important
@@ -115,14 +113,53 @@ array of all listening sockets, and registers a read event for each of them.
 [ngx_event.c]: https://github.com/nginx/nginx/blob/release-1.15.3/src/event/ngx_event.c
 [ngx_enable_accept_events]: https://github.com/nginx/nginx/blob/release-1.15.3/src/event/ngx_event_accept.c#L356
 
-## Systemd
+# Systemd
+
+## Event sources
 
 While Nginx supports many notification mechanisms, `sd-event` supports many more
 _event types_: I/O, timers, signals, child process stage changes, and `inotify`.
+See the event source type definitions at [sd-event.c][sd-event.c]. All these
+event sources are represented by a uniform data structure,
+[sd_event_soure][sd_event_source], which has a big `union` field for eight
+possible types, each for one event source. Each event type has its own specific
+fields, but all of them have an event handler, named `sd_event_x_handler_t` (`x`
+is the event type).
 
-## Others
+Systemd is able to handle these many event types thanks to the Linux APIs
+`timerfd`, `signalfd`, and `waitid`, which are `epoll` like APIs for
+multiplexing on timers, signals, and child processes.
 
-## Summary
+### Event loop
+
+Event loops objects are of the type `sd_event`, which has a reference counter, a
+fd used for `epoll`, another fd for `watchdog`, a few timestamps, a hash map for
+each event source type, three priority queues (pending, prepare and exit), and
+lastly, a counter for the last iteration. To get a new loop object, the function
+`sd_event_new` can be called. However, since it is recommended that one thread
+only to possess one loop, the helper function `sd_event_default` is recommended
+which creates a new loop object only when there hasn't been one for the current
+thread.
+
+## Working with events
+
+An event loop is allocated by `sd_event_new`. As can be seen from its
+implementation, three objects are allocated: the loop obect of type `sd_event`,
+a priority queue for pending events,  and an  `epoll` fd. Events can be added to
+a given loop via one of the `sd_event_add_xxx` methods. A callback function can
+be added which will be called when an event of the added type is dispatched.
+They are put in to a priority queue. An event loop can be executed for one
+iteration by `sd_event_run`, or loop until there's no more events by
+`sd_event_loop`. An event is taken out of the priority queue at each iteration,
+and dispatched by calling the callbacks of a particular source type registered
+at the `sd_event_add_xxx` call.
+
+[sd-event.c]: https://github.com/systemd/systemd/blob/v239/src/libsystemd/sd-event/sd-event.c#L31..L47
+[sd_event_source]: https://github.com/systemd/systemd/blob/v239/src/libsystemd/sd-event/sd-event.c#L31..L47
+
+# Others
+
+# Summary
 
 As you can see from the case studies above, an event loop can be useful when:
   - you have to monitor changes on multiple sources, and
