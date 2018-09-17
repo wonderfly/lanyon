@@ -8,8 +8,6 @@ toc: true
 * TOC
 {:toc}
 
-**Work in progress...**
-
 Event loops has been something I've always wanted to take a deeper look into as
 it has appeared in so many places, ranging from networking servers to system
 daemons. In this blog I will take a case study on some of the popular event
@@ -144,7 +142,7 @@ thread.
 ## Working with events
 
 An event loop is allocated by `sd_event_new`. As can be seen from its
-implementation, three objects are allocated: the loop obect of type `sd_event`,
+implementation, three objects are allocated: the loop object of type `sd_event`,
 a priority queue for pending events,  and an  `epoll` fd. Events can be added to
 a given loop via one of the `sd_event_add_xxx` methods. A callback function can
 be added which will be called when an event of the added type is dispatched.
@@ -157,7 +155,160 @@ at the `sd_event_add_xxx` call.
 [sd-event.c]: https://github.com/systemd/systemd/blob/v239/src/libsystemd/sd-event/sd-event.c#L31..L47
 [sd_event_source]: https://github.com/systemd/systemd/blob/v239/src/libsystemd/sd-event/sd-event.c#L31..L47
 
-# Others
+# Libevent
+
+We've so far looked two event loop implementations specialized for their use in
+a bigger project. Now let's look at some generic event loop libraries that do
+the job just fine, so you won't have to reinvent the wheel if you need an event
+loop in your project.
+
+`libevent` is a generic event loop library written in C. As its document says,
+it allows a callback function to be called when a certain event _on a file
+descriptor_ happens, or a timeout happens. It also supports callbacks due to
+_signals_ and regular _timeouts_.
+
+As with nginx, libevent supports most of the available event notification
+mechanisms mentioned in the C10K problem: `/dev/poll`, `kqueue`, `select`,
+`poll`, `epoll`, and **Windows** `select`. Because of its great portability,
+its user list includes a number of high profile C/C++ projects: Chromium,
+Memcached, NTP, tmux, just to name a few.
+
+Another major contribution of the libevent project is it produced a number of
+benchmarks, comparing performance between the various event notification
+mechanisms.
+
+## APIs
+
+### Event Loop
+
+In order to abstract the underlying event notification API out, `libevent`
+provides a struct `event_base` for the main loop, as opposed to a fd or a fd set
+used by `select` and others. A new event base can be created by:
+
+```
+struct event_base *event_base_new(void);
+```
+
+Unlike other event loop implementations mentioned so far, libevent allows the
+creation of "advanced" loops by using a configuration, `event_config`. Each
+event notification mechanism supported by an event base is called a _method_, or
+a _backend_. To query for the supported methods, use
+
+```
+const char **event_get_supported_methods(void);
+```
+
+Like `sd-event`, `libevent` also supports event priorities. To set the priority
+levels in an event base, use:
+
+```
+int event_base_priority_init(struct event_base *base, int n_priorities);
+```
+
+Once the event base is set up and all ready to go, you can run it by
+
+```
+int event_base_loop(struct event_base *base, int flags);
+```
+
+The function above will run the event base until there is no more event
+registered in it. If you will be adding events in another thread, and want to
+keep the loop running even when there are no more active events temporarily,
+there is the flag `EVLOOP_NO_EXIT_NO_EMPTY`. When the flag is set, the event
+base will keep running the loop will until somebody calls
+`event_base_loopbreak()`, or calls `event_base_loopexit()`, or an error occurs.
+
+### Events
+
+An event in libevent is simply a fd plus a flag specifying what events to
+watch on that fd: read, write, timeout, signal, etc.
+
+About event states, this is what the libevent documentation has to say:
+
+    Events have similar lifecycles. Once you call a Libevent function to set up
+    an event and associate it with an event base, it becomes initialized. At
+    this point, you can add, which makes it pending in the base. When the event
+    is pending, if the conditions that would trigger an event occur (e.g., its
+    file descriptor changes state or its timeout expires), the event becomes
+    active, and its (user-provided) callback function is run. If the event is
+    configured persistent, it remains pending. If it is not persistent, it stops
+    being pending when its callback runs. You can make a pending event
+    non-pending by deleting it, and you can add a non-pending event to make it
+    pending again.
+
+As mentioned earlier, libevent support event priorities. To set the priority of
+an event, use:
+
+```
+int event_priority_set(struct event *event, int priority);
+
+```
+
+### Utilities
+
+The libevent library also provides a number of helper functions that provide a
+compat layer when there are multiple implementations by the underlying operating
+systems: intergers, socket API, random number generator, etc. It also provides
+convenient helper functions for common networking server implementation patterns
+like "listen, accept, callback", buffered I/O, DNS name resolution, etc.
+
+## Implementation
+
+The main data structure for events is [`struct event`][struct-event]. As you can
+see, it is focused on networking IO and doesn't define as many event source
+types as sd-event. Its main body contains a callback, a fd (the socket or
+signalfd), a bitmask of events (read, write, etc.), and a union between `ev_io`
+and `ev_signal`.
+
+Event loop, `event_base`, is defined in [event-internal.h][event-internal.h].
+Its core is a backend object, of type [`struct eventop`][eventop], a map from
+monitored fds to events on them, and a map from signal fds to events.
+
+`eventop` is the uniform interface for various event notification mechanism,
+very much like nginx's `ngx_event_actions` . Each method/backend implements the
+common set of functions, in their own files - epoll.c, select.c, etc. For
+example, this is the epoll based implementation:
+
+```
+const struct eventop epollops = {
+  "epoll",
+  epoll_init,
+  epoll_nochangelist_add,
+  epoll_nochangelist_del,
+  epoll_dispatch,
+  epoll_dealloc,
+  1, /* need reinit */
+  EV_FEATURE_ET|EV_FEATURE_O1|EV_FEATURE_EARLY_CLOSE,
+  0
+};
+```
+
+And a new event is added via `epoll_nochangelist_add`, which calls `epoll_ctl`
+with `EPOLL_CTL_ADD` under the hood.
+
+[struct-event]: https://github.com/libevent/libevent/blob/release-2.1.8-stable/include/event2/event_struct.h#L123..L154
+[event-internal.h]: https://github.com/libevent/libevent/blob/release-2.1.8-stable/event-internal.h#L208
+[eventop]: https://github.com/libevent/libevent/blob/release-2.1.8-stable/event-internal.h#L85
+
+# Libev
+
+[Libev][libev] claims to be another event loop implementation, _loosely modeled
+after libevent_, with better performance, more event source types (child PID,
+file path, wall-clocked based timers), simpler code, and bindings in multiple
+languages. As with libevent, it also supports a variety of event notification
+mechanisms including select, epoll and all.
+
+Libev's API is documented at
+<http://pod.tst.eu/http://cvs.schmorp.de/libev/ev.pod>. Extensive documentation
+is listed as one of the advantages of libev over libevent. At a glance, it has
+very similar APIs as libevent.
+
+The implementation. I was shocked when I first opened its source directory -
+there is only one level of directories! All code is in the 10+ files in the root
+directory. It indeed is a small code base. I suppose it's designed to be
+embedded in small applications.
+
+[libev]: http://software.schmorp.de/pkg/libev.html
 
 # Summary
 
@@ -168,6 +319,6 @@ As you can see from the case studies above, an event loop can be useful when:
 The implementation of an event loop would include:
   - One or more event sources that put events in a queue
   - A cycle that dequeues one element at a time and processes it
-And number 1, and the queue, are usually provided by the operating system
-kernel. The loop process registers event sources and gets notified when there
-are changes.
+
+# References
+1.  [A tiny introduction to asynchronous IO](http://www.wangafu.net/~nickm/libevent-book/01_intro.html)
