@@ -5,7 +5,7 @@ permalink: pretty
 # Setup
 title: wonderfly
 tagline: 'Blog'
-description: 'Spanish study notes, technical reading notes, and more'
+description: 'Reading notes, personal blogs, and more.'
 url: http://localhost:4000
 baseurl: ''
 paginate: 5
