@@ -14,3 +14,4 @@ title: Links
 - [] [Scaling the Linux Networking Stack](https://www.kernel.org/doc/Documentation/networking/scaling.txt)
 - [] [Queueing in the Linux Network Stack](https://www.linuxjournal.com/content/queueing-linux-network-stack)
 - [] [How to Optimize Code for x86 and x86\_64](https://www.agner.org/optimize/)
+- [x] [LinuxBoot Explained](https://lwn.net/Articles/748586/)
