@@ -25,3 +25,4 @@ title: Links
       specific MM?
 - [x] [Implementing Circular Buffer in C](https://embedjournal.com/implementing-circular-buffer-embedded-c/)
 - [] [Race Condition in Reading RTC Timekeeping Registers](https://embedjournal.com/rtc-registers-read-atomic-values/)
+- [x] [BPF vs Loadable Kernel Modules](https://news.ycombinator.com/item?id=14726311)
