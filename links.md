@@ -24,6 +24,7 @@ title: Links
     - 70ns per slab allocation (particularly in the RX path)  --> Networking
       specific MM?
 - [x] [Implementing Circular Buffer in C](https://embedjournal.com/implementing-circular-buffer-embedded-c/)
+- [] [Detailed Design of a Lock Free Multi-Producer Multi-Consumer Queue](https://moodycamel.com/blog/2014/detailed-design-of-a-lock-free-queue.htm)
 - [] [Race Condition in Reading RTC Timekeeping Registers](https://embedjournal.com/rtc-registers-read-atomic-values/)
 - [x] [BPF vs Loadable Kernel Modules](https://news.ycombinator.com/item?id=14726311)
 - [] [Learn Vimscript the Hard Way](https://learnvimscriptthehardway.stevelosh.com/)
